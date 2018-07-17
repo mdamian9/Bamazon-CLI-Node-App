@@ -24,20 +24,23 @@ connection.connect(function (err) {
 });
 
 console.log("Selecting all products...\n");
-connection.query("SELECT * FROM items", function (err, response) {
+connection.query("SELECT * FROM items", function (err, data) {
     if (err) throw err;
-    console.table(response);
+    console.log(data + "\n");
+    console.table(data);
+    // Main prompt for user to choose item to buy
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "itemID",
+            message: "Enter the ID of the item you would like to purchase: ",
+            validate: function validateItemID(name) {
+                return name !== '';
+            }
+        }
+    ]).then(function (response) {
+        // var itemIDNum = parseInt(response.itemID);
+        console.log("ID of item: " + (response.itemID) + "\nItem name: " + data[response.itemID - 1].product_name);
+    });
     connection.end();
 });
-
-
-
-// console.table([
-//     {
-//         name: 'foo',
-//         age: 10
-//     }, {
-//         name: 'bar',
-//         age: 20
-//     }
-// ]);

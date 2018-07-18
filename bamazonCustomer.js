@@ -26,7 +26,6 @@ connection.connect(function (err) {
 console.log("Selecting all products...\n");
 connection.query("SELECT * FROM items", function (err, data) {
     if (err) throw err;
-    console.log(data + "\n");
     console.table(data);
     // Main prompt for user to choose item to buy
     inquirer.prompt([
@@ -37,10 +36,33 @@ connection.query("SELECT * FROM items", function (err, data) {
             validate: function validateItemID(name) {
                 return name !== '';
             }
+        },
+        {
+            type: "input",
+            name: "numUnits",
+            message: "Enter the number of units you would like to buy: ",
+            validate: function validateNumUnits(name) {
+                return name !== '';
+            }
         }
     ]).then(function (response) {
-        // var itemIDNum = parseInt(response.itemID);
-        console.log("ID of item: " + (response.itemID) + "\nItem name: " + data[response.itemID - 1].product_name);
+        var indexOfItem = response.itemID - 1;
+        var itemName = data[indexOfItem].product_name;
+        var stockQuantity = data[indexOfItem].stock_quantity;
+        if (stockQuantity >= response.numUnits) {
+            var totalCost = data[indexOfItem].price * response.numUnits;
+            // Should the mySQL file be updated? Or where is this update being procesed?
+            connection.query("UPDATE items SET stock_quantity = ? WHERE item_id = ?", [stockQuantity - response.numUnits, response.itemID]);
+            connection.query("SELECT * FROM items", function (err, data) {
+                if (err) throw err;
+                console.log("Successfully bought " + response.numUnits + " units of " + itemName + "\nYour total is: $" + totalCost);
+                console.table(data);
+                connection.end();
+            });
+        } else {
+            console.log("There are insufficient items in stock. Please review items: ");
+            console.table(data);
+            connection.end();
+        };
     });
-    connection.end();
 });

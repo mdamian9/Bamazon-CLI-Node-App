@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS bamazonSeedsDB;
+-- DROP DATABASE IF EXISTS bamazonSeedsDB;
 
-CREATE DATABASE bamazonSeedsDB;
+-- CREATE DATABASE bamazonSeedsDB;
 
-USE bamazonSeedsDB;
+-- USE bamazonSeedsDB;
 
 CREATE TABLE items (
   item_id INT NOT NULL AUTO_INCREMENT,

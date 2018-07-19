@@ -3,7 +3,7 @@ var inquirer = require("inquirer");
 var mysql = require("mysql");
 require("console.table");
 
-// Create connection
+// Create connection to mySQL database
 var connection = mysql.createConnection({
     host: "localhost",
 
@@ -86,7 +86,7 @@ function shop() {
     });
 };
 
-// 
+// Connect to mySQL connection
 connection.connect(function (err) {
     if (err) throw err;
     console.log("Connected as id: " + connection.threadId + "\n");

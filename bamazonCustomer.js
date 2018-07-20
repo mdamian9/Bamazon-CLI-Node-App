@@ -93,7 +93,3 @@ connection.connect(function (err) {
     // Call main function "shop()" to begin app
     shop();
 });
-
-
-
-

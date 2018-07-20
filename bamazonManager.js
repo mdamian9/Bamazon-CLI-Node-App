@@ -89,7 +89,44 @@ function addToInventory() {
 
 // This function will allow the manager to add a completely new product to the store.
 function addNewProduct() {
-
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "itemName",
+            message: "Enter the name of the new item to add: "
+        },
+        {
+            type: "input",
+            name: "itemCategory",
+            message: "Enter the category of the new item: "
+        },
+        {
+            type: "input",
+            name: "itemPrice",
+            message: "Enter item price: "
+        },
+        {
+            type: "input",
+            name: "itemStock",
+            message: "Enter the stock quantity of new item: "
+        }
+    ]).then(function (response) {
+        connection.query("INSERT INTO items (product_name, department_name, price, stock_quantity) " +
+            "VALUES (?, ?, ?, ?)", [response.itemName, response.itemCategory, parseFloat(response.itemPrice),
+            parseFloat(response.itemStock)]);
+        console.log("Selecting all products...\n");
+        connection.query("SELECT * FROM items", function (err, data) {
+            if (err) throw err;
+            console.table(data);
+            if (response.itemStock > 0) {
+                console.log("Successfully added new item to inventory:\nName: " + response.itemName + "\nCategory: " +
+                    response.itemCategory + "\nPrice: $" + response.itemPrice + "\nStock quantity: " + response.itemStock + "\n");
+            } else {
+                console.log("Nothing was added.\n");
+            };
+            askIfDone();
+        });
+    });
 };
 
 // This function asks the user if they are done with the manager app.
